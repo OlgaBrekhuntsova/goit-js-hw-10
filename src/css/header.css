@@ -3,7 +3,7 @@
 }
 .nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
 }
 .nav-logo {
   display: inline-flex;
@@ -15,6 +15,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 40px;
+  margin-left: 50px;
 }
 .nav-link {
   position: relative;

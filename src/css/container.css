@@ -3,7 +3,10 @@
   min-width: 320px;
   max-width: 375px;
   margin: 0 auto;
-  padding: 0 16px;
+  margin-bottom: 30px;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
 }
 /* Styles for Tablet devices */
 @media only screen and (min-width: 768px) {
