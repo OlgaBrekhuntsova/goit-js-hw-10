@@ -12,6 +12,7 @@ label.delay {
 .form fieldset,
 .form button {
   width: 100%;
+  font-family: inherit;
 }
 
 .delay input {
