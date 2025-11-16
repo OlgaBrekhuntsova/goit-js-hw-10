@@ -3,8 +3,13 @@ import iziToast from 'izitoast';
 
 const refs = {
   dateInput: document.querySelector('input#datetime-picker'),
+  calendar: document.querySelector('.flatpickr-calendar'),
   startCountButton: document.querySelector('button[data-start]'),
   timer: document.querySelector('.timer-wrapper'),
+  daysOutput: document.querySelector('span[data-days]'),
+  hoursOutput: document.querySelector('span[data-hours]'),
+  minutesOutput: document.querySelector('span[data-minutes]'),
+  secondsOutput: document.querySelector('span[data-seconds]'),
 };
 
 const startBtn = {
@@ -21,8 +26,7 @@ const startBtn = {
   },
 };
 
-const alertMmessage = 'Please choose a date in the future';
-let btnIntervalId = '';
+// const alertMmessage = 'Please choose a date in the future';
 
 const fpOptions = {
   enableTime: true,
@@ -32,7 +36,7 @@ const fpOptions = {
   locale: {
     firstDayOfWeek: 1,
     weekdays: {
-      shorthand: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'], // ← 2 буквы
+      shorthand: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
       longhand: [
         'Sunday',
         'Monday',
@@ -48,11 +52,10 @@ const fpOptions = {
     userSelectedDate = selectedDates[0];
     checkTime();
     if (userSelectedDate - new Date() <= 0) {
-      toast.show(alertMmessage);
+      alertToast.show();
       return;
     }
     startBtn.enable();
-    btnIntervalId = setInterval(checkTime, 5000); //blocks button, if selected date became less then current just because of running time
   },
 };
 flatpickr('#datetime-picker', fpOptions);
@@ -74,7 +77,7 @@ const timer = {
     const intervalId = setInterval(() => {
       const diffMS = userSelectedDate - new Date();
       this.updateTime(convertMs(diffMS));
-      refs.timer.innerHTML = this.createMarkup();
+      this.createMarkup();
       if (diffMS < 1000) {
         clearInterval(intervalId);
         this.isActive = false;
@@ -83,21 +86,10 @@ const timer = {
     }, 1000);
   },
   createMarkup() {
-    return `<div class="field">
-  <span class="value" data-days >${this.time.days}</span>
-            <span class="label">Days</span>
-          </div>
-          <div class="field">
-            <span class="value" data-hours>${this.time.hours}</span>
-            <span class="label">Hours</span>
-          </div>
-          <div class="field">
-            <span class="value" data-minutes>${this.time.minutes}</span>
-            <span class="label">Minutes</span>
-          </div>
-          <div class="field">
-            <span class="value" data-seconds>${this.time.seconds}</span>
-            <span class="label">Seconds</span>`;
+    refs.daysOutput.textContent = this.time.days;
+    refs.hoursOutput.textContent = this.time.hours;
+    refs.minutesOutput.textContent = this.time.minutes;
+    refs.secondsOutput.textContent = this.time.seconds;
   },
 };
 
@@ -110,14 +102,14 @@ function updateInputState() {
 }
 
 refs.dateInput.addEventListener('focus', () => {
-  toast.close();
+  alertToast.close();
 });
 
 refs.startCountButton.addEventListener('click', () => {
   startBtn.disable();
-  if (btnIntervalId) {
-    clearInterval(btnIntervalId);
-    btnIntervalId = '';
+  if (userSelectedDate - new Date() <= 0) {
+    alertToast.show();
+    return;
   }
   timer.start();
 });
@@ -125,10 +117,6 @@ refs.startCountButton.addEventListener('click', () => {
 function checkTime() {
   if (userSelectedDate - new Date() <= 0) {
     startBtn.disable();
-    if (btnIntervalId) {
-      clearInterval(btnIntervalId);
-      btnIntervalId = '';
-    }
   }
 }
 
@@ -151,10 +139,11 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-const toast = {
-  show(message) {
+const alertToast = {
+  message: 'Please choose a date in the future',
+  show() {
     iziToast.show({
-      message: message,
+      message: this.message,
       position: 'topRight',
       backgroundColor: '#EF4040',
       messageColor: '#ffffff',
