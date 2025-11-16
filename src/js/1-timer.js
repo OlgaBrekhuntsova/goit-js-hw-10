@@ -3,7 +3,6 @@ import iziToast from 'izitoast';
 
 const refs = {
   dateInput: document.querySelector('input#datetime-picker'),
-  calendar: document.querySelector('.flatpickr-calendar'),
   startCountButton: document.querySelector('button[data-start]'),
   timer: document.querySelector('.timer-wrapper'),
   daysOutput: document.querySelector('span[data-days]'),
